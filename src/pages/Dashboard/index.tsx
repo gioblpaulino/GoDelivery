@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import Logo from '../../assets/logo-header.png';
 import SearchInput from '../../components/SearchInput';
 
+
+
 import api from '../../services/api';
 import formatValue from '../../utils/formatValue';
 

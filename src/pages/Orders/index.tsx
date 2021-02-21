@@ -16,7 +16,11 @@ import {
   FoodTitle,
   FoodDescription,
   FoodPricing,
+  CloseIconButton
 } from './styles';
+
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
 interface Food {
   id: number;
@@ -29,23 +33,28 @@ interface Food {
 
 const Orders: React.FC = () => {
   const [orders, setOrders] = useState<Food[]>([]);
+
+  const { navigate } = useNavigation();
   useEffect(() => {
     async function loadOrders(): Promise<void> {
-      try {
-        const response = await api.get('/orders/');
+      const { data } = await api.get<Food[]>('orders');
 
-        setOrders(
-          response.data.map((order: Food) =>({
-            ...order,
-            formattedPrice: formatValue(order.price),
-          })),
-        );
-      } catch (error) {
-        console.error(error)
-      }
+      setOrders(
+        data.map<Food>(order => ({
+          ...order,
+          formattedPrice: formatValue(order.price),
+        })),
+      );
     }
     loadOrders();
   }, []);
+
+
+  async function handleNavigate(id: number): Promise<void> {
+    navigate('OrderDetails', {
+      id,
+    });
+  }
 
   return (
     <Container>
@@ -58,7 +67,7 @@ const Orders: React.FC = () => {
           data={orders}
           keyExtractor={item => String(item.id)}
           renderItem={({ item }) => (
-            <Food key={item.id} activeOpacity={0.6}>
+            <Food key={item.id} activeOpacity={0.6} onPress={() => handleNavigate(item.id)}>
               <FoodImageContainer>
                 <Image
                   style={{ width: 88, height: 88 }}
@@ -70,6 +79,9 @@ const Orders: React.FC = () => {
                 <FoodDescription>{item.description}</FoodDescription>
                 <FoodPricing>{item.formattedPrice}</FoodPricing>
               </FoodContent>
+              <CloseIconButton>
+                <MaterialIcon name="close" size={24} color="#FFB84D" />
+              </CloseIconButton>
             </Food>
           )}
         />

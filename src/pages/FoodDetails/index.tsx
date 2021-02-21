@@ -5,12 +5,14 @@ import React, {
   useMemo,
   useLayoutEffect,
 } from 'react';
-import { Image } from 'react-native';
+import { Alert, Image } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Feather';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import formatValue from '../../utils/formatValue';
+
+import Modal from '../../components/Modal';
 
 import api from '../../services/api';
 
@@ -67,6 +69,7 @@ const FoodDetails: React.FC = () => {
   const [extras, setExtras] = useState<Extra[]>([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [foodQuantity, setFoodQuantity] = useState(1);
+  const [showModal, setShowModal] = useState(false);
 
 
   const navigation = useNavigation();
@@ -96,20 +99,17 @@ const FoodDetails: React.FC = () => {
 
 
   useEffect(() => {
-    async function loadFavorites(): Promise<void> {
+    const loadFavorites = async (): Promise<void> => {
+      const response = await api.get<Food[]>('favorites');
 
-      const response = await api.get(`/favorites/${routeParams.id}`)
+      const founded = response.data.find(favorite => favorite.id === food.id);
 
-      if(response.data !== isFavorite){
-      setIsFavorite({...response.data})
-      } else {
-        setIsFavorite(isFavorite)
-      }
+      if (founded)
+      setIsFavorite(true);
+    };
 
-    }
     loadFavorites();
-
-  }, [routeParams]);
+  }, [food.id]);
 
   function handleIncrementExtra(id: number): void {
     setExtras(
@@ -165,19 +165,50 @@ const FoodDetails: React.FC = () => {
     return formatValue((extraTotal + foodTotal) * foodQuantity);
   }, [extras, food, foodQuantity]);
 
+  const orderValue = useMemo(() => {
+    const extraTotal = extras.reduce((accumulator, extra) =>{
+      return accumulator + extra.quantity * extra.value;
+    }, 0);
+
+    const foodTotal = food.price;
+    return (extraTotal + foodTotal) * foodQuantity;
+
+  }, [extras, food, foodQuantity]);
+
   async function handleFinishOrder(): Promise<void> {
-    await api.post(`orders`, food)
+
+    try {
+      const order = {
+        ...food,
+        quantity: foodQuantity,
+        extras,
+        orderValue,
+      };
+
+      await api.post(`orders`, order);
+
+      setShowModal(true);
+
+      setTimeout(() => {
+        setShowModal(false);
+        navigation.navigate('OrderDetails', {
+          id: food.id,
+        });
+      }, 2000);
+    } catch (error) {
+        Alert.alert('erro ao efetuar pedido')
+    }
 
   }
 
-  // Calculate the correct icon name
+
   const favoriteIconName = useMemo(
     () => (isFavorite ? 'favorite' : 'favorite-border'),
     [isFavorite],
   );
 
   useLayoutEffect(() => {
-    // Add the favorite icon on the right of the header bar
+
     navigation.setOptions({
       headerRight: () => (
         <MaterialIcon
@@ -193,7 +224,7 @@ const FoodDetails: React.FC = () => {
   return (
     <Container>
       <Header />
-
+      {showModal && <Modal />}
       <ScrollContainer>
         <FoodsContainer>
           <Food>

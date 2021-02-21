@@ -103,3 +103,8 @@ export const FoodPricing = styled.Text`
 
   color: #39b100;
 `;
+
+export const CloseIconButton = styled.TouchableOpacity`
+  margin-right:10px;
+  margin-bottom: 60px;
+`;

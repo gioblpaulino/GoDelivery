@@ -111,19 +111,15 @@ export const AdittionalQuantity = styled.View`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 105px;
+  width: 150px;
 `;
 
 export const TotalContainer = styled.View`
-  padding: 0 24px;
-  margin-top: 20px;
-`;
-
-export const PriceButtonContainer = styled.View`
-  display: flex;
   flex-direction: row;
-  justify-content: space-between;
   align-items: center;
+  padding: 0 24px;
+  margin-top: 24px;
+  justify-content: space-between;
 `;
 
 export const TotalPrice = styled.Text`
@@ -133,7 +129,18 @@ export const TotalPrice = styled.Text`
   font-size: 24px;
   line-height: 28px;
   color: #39b100;
+  text-align: center;
+`;
+
+export const TotalPriceExtra = styled.Text`
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+  color: #6c6c80;
   margin-top: 16px;
+  text-align: right;
 `;
 
 export const QuantityContainer = styled.View`
@@ -148,28 +155,28 @@ export const QuantityContainer = styled.View`
   margin-top: 25px;
 `;
 
-export const FinishOrderButton = styled.TouchableOpacity`
-  background: #39b100;
+export const TotalExtraContainer = styled.View`
+  background: #f0f0f5;
   border-radius: 8px;
+  display: flex;
   flex-direction: row;
-  align-items: center;
-  margin-top: 26px;
+  justify-content: space-between;
+  padding: 10px 15px;
+  margin-top: 8px;
 `;
 
-export const ButtonText = styled.Text`
-  font-weight: 600;
+export const TotalExtraText = styled.Text`
+  font-family: 'Poppins-Regular';
+  font-style: normal;
+  font-weight: 500;
   font-size: 15px;
-  line-height: 22px;
-  color: #fff;
-  flex: 1;
-  text-align: center;
+  line-height: 18px;
+  color: #444;
 `;
 
-export const IconContainer = styled.View`
-  background-color: #41c900;
-  padding: 16px;
-  border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px;
+export const TotalExtraContent = styled.View`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 150px;
 `;
-
-
